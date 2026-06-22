@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" rx="52" fill="#eef7f1"/>
+  <rect x="98" y="96" width="1004" height="608" rx="42" fill="#ffffff"/>
+  <rect x="164" y="164" width="310" height="310" rx="155" fill="#0a0d0b"/>
+  <path d="M622 188h310M622 274h390M622 360h260M622 516h310" stroke="#0a0d0b" stroke-width="22" stroke-linecap="round"/>
+  <path d="M238 320c48 42 112 42 160 0" fill="none" stroke="#66f28f" stroke-width="18" stroke-linecap="round"/>
+  <text x="164" y="606" fill="#0a0d0b" font-family="Arial, sans-serif" font-size="82" font-weight="800">日料小店</text>
+</svg>

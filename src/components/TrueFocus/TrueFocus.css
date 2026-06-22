@@ -1,0 +1,78 @@
+.focus-container {
+  position: relative;
+  display: flex;
+  gap: 0.26em;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  outline: none;
+  user-select: none;
+}
+
+.focus-word {
+  position: relative;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: clamp(72px, 15vw, 230px);
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 0.9;
+  outline: none;
+  text-transform: uppercase;
+  transition:
+    filter 0.3s ease,
+    color 0.3s ease;
+  user-select: none;
+}
+
+.focus-word.active {
+  color: #f6fff8;
+  filter: blur(0);
+}
+
+.focus-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: content-box;
+  border: none;
+  pointer-events: none;
+}
+
+.corner {
+  position: absolute;
+  width: clamp(14px, 1.6vw, 28px);
+  height: clamp(14px, 1.6vw, 28px);
+  border: clamp(3px, 0.34vw, 6px) solid var(--border-color, #1ee66f);
+  border-radius: 4px;
+  filter: drop-shadow(0 0 8px var(--glow-color, rgba(30, 230, 111, 0.55)));
+  transition: none;
+}
+
+.top-left {
+  top: -18px;
+  left: -18px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.top-right {
+  top: -18px;
+  right: -18px;
+  border-bottom: none;
+  border-left: none;
+}
+
+.bottom-left {
+  bottom: -18px;
+  left: -18px;
+  border-top: none;
+  border-right: none;
+}
+
+.bottom-right {
+  right: -18px;
+  bottom: -18px;
+  border-top: none;
+  border-left: none;
+}

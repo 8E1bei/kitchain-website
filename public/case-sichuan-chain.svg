@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" rx="52" fill="#ffffff"/>
+  <rect x="90" y="90" width="1020" height="620" rx="44" fill="#0a0d0b"/>
+  <circle cx="214" cy="214" r="76" fill="#66f28f"/>
+  <circle cx="990" cy="604" r="142" fill="#66f28f" opacity="0.18"/>
+  <path d="M180 514h322M180 592h604M180 670h462" stroke="#ffffff" stroke-width="24" stroke-linecap="round" opacity="0.88"/>
+  <text x="172" y="300" fill="#ffffff" font-family="Arial, sans-serif" font-size="84" font-weight="800">川菜连锁</text>
+  <text x="176" y="396" fill="#dce2dc" font-family="Arial, sans-serif" font-size="34" font-weight="700">多门店数据统一复盘</text>
+</svg>

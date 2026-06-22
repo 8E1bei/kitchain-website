@@ -1,0 +1,60 @@
+.card-swap-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-style: preserve-3d;
+  perspective: 900px;
+}
+
+.card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  align-content: center;
+  gap: 18px;
+  overflow: hidden;
+  border: 2px solid #0a0d0b;
+  border-radius: 20px;
+  background: transparent;
+  box-shadow: none;
+  color: #0a0d0b;
+  cursor: pointer;
+  padding: 92px 32px 48px;
+  transform-style: preserve-3d;
+}
+
+.card::before {
+  position: absolute;
+  inset: 68px 0 auto;
+  height: 2px;
+  background: #0a0d0b;
+  content: '';
+}
+
+.card span {
+  position: absolute;
+  top: 22px;
+  left: 32px;
+  color: #0a0d0b;
+  font-size: 18px;
+  font-weight: 820;
+  letter-spacing: 0.08em;
+}
+
+.card h3 {
+  margin: 0;
+  color: #0a0d0b;
+  font-size: clamp(38px, 4vw, 64px);
+  font-weight: 850;
+  letter-spacing: -0.04em;
+  line-height: 0.96;
+}
+
+.card p {
+  max-width: 700px;
+  margin: 0;
+  color: #4d5d53;
+  font-size: 18px;
+  line-height: 1.55;
+}

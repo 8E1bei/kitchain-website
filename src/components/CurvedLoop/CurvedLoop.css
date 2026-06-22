@@ -1,0 +1,31 @@
+.curved-loop-jacket {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 1180px;
+  overflow: visible;
+  user-select: none;
+}
+
+.curved-loop-svg {
+  display: block;
+  width: 100%;
+  aspect-ratio: 100 / 36;
+  overflow: visible;
+  fill: #0a0d0b;
+  font-size: 75px;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.section-loop-text {
+  fill: #0a0d0b;
+  letter-spacing: 0;
+}
+
+.orbit-loop-text {
+  fill: rgba(10, 13, 11, 0.34);
+}
