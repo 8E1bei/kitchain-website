@@ -13,7 +13,6 @@ import {
 } from 'lucide-react'
 import CardSwap, { Card } from './components/CardSwap/CardSwap'
 import ClickSpark from './components/ClickSpark/ClickSpark'
-import CircularGallery from './components/CircularGallery/CircularGallery'
 import CurvedLoop from './components/CurvedLoop/CurvedLoop'
 import Lanyard from './components/Lanyard/Lanyard'
 import PillNav from './components/PillNav/PillNav'
@@ -78,14 +77,27 @@ const capabilityCards = [
   },
 ]
 
-const caseGalleryItems = [
-  { image: '/case-lujian-xiaoguan.png', imageOffsetY: -0.02, title: '庐间小馆', line1: '家常聚会', line2: '做稳熟客复购' },
-  { image: '/case-black.svg', title: '皖宴', line1: '高端宴请', line2: '做深宴请转化' },
-  { image: '/case-black.svg', title: '胡子大厨', line1: '工作简餐', line2: '抢占午市高峰' },
-  { image: '/case-black.svg', title: '大肆撸串', line1: '烟火夜宵', line2: '拉动夜间客流' },
-  { image: '/case-siji-fandian.png', title: '四吉饭店', line1: '网红川菜', line2: '放大热门势能' },
-  { image: '/case-black.svg', title: '滇牛云南火锅', line1: '地方特色', line2: '做强特色心智' },
-  { image: '/case-black.svg', title: '品粹餐饮集团', line1: '多元餐饮', line2: '串联多店增长' },
+const caseShowcaseItems = [
+  { id: 'lujian-xiaoguan', img: '/case-dome-lujian-xiaoguan.png', height: 760 },
+  { id: 'wanyan', img: '/case-masonry-wanyan.jpg', height: 620 },
+  { id: 'dianniu', img: '/case-dome-dianniu.png', height: 720 },
+  { id: 'benlai-chuancai', img: '/case-dome-benlai-chuancai.png', height: 690 },
+  { id: 'asan-zhexian', img: '/case-dome-asan-zhexian.png', height: 700 },
+  { id: 'yunaman', img: '/case-dome-yunaman.png', height: 680 },
+  { id: 'yudonglan', img: '/case-dome-yudonglan.png', height: 700 },
+  { id: 'dongfadao', img: '/case-dome-dongfadao.png', height: 660 },
+  { id: 'pincui-huiyuan', img: '/case-dome-pincui-huiyuan.png', height: 720 },
+  { id: 'chuanshiduo', img: '/case-dome-chuanshiduo.png', height: 690 },
+  { id: 'rongxiansen', img: '/case-dome-rongxiansen.png', height: 650 },
+  { id: 'siji-fandian', img: '/case-dome-siji-fandian.png', height: 690 },
+  { id: 'gaoxing-yiguo', img: '/case-dome-gaoxing-yiguo.png', height: 620 },
+  { id: 'haoren-xiaochi', img: '/case-dome-haoren-xiaochi.png', height: 640 },
+  { id: 'yuyao-haixian', img: '/case-dome-yuyao-haixian.png', height: 660 },
+]
+
+const caseShowcaseRows = [
+  caseShowcaseItems.slice(0, 8),
+  caseShowcaseItems.slice(8),
 ]
 
 const officialCards = [
@@ -118,7 +130,7 @@ const videoCards = [
   {
     title: '报告生成过程',
     orientation: 'vertical',
-    media: '/sixth-section-animation-3-v3.mp4',
+    media: '/sixth-section-animation-3-current.mp4',
     caption: 'AI全执行，省时省力就是省钱。',
     captionColor: '#0a0d0b',
   },
@@ -133,6 +145,12 @@ function App() {
   const [loopSpeed, setLoopSpeed] = useState(1)
   const capabilityTimerRef = useRef<number | undefined>(undefined)
   const loopSpeedTimerRef = useRef<number | undefined>(undefined)
+  const loopSpeedRef = useRef(1)
+  const caseTrackRefs = useRef<Array<HTMLDivElement | null>>([])
+  const caseProgressRef = useRef([0, 0])
+  const caseFrameRef = useRef<number | undefined>(undefined)
+  const casePointerSpeedRef = useRef(1)
+  const casePointerSpeedTimerRef = useRef<number | undefined>(undefined)
   const capabilitiesSectionRef = useRef<HTMLElement>(null)
   const heroTransitionRef = useRef<HTMLDivElement>(null)
   const restaurantFormRef = useRef<HTMLFormElement>(null)
@@ -339,6 +357,59 @@ function App() {
   }, [])
 
   useEffect(() => {
+    loopSpeedRef.current = loopSpeed
+  }, [loopSpeed])
+
+  useEffect(() => {
+    const handlePointerActivity = () => {
+      casePointerSpeedRef.current = 10
+      window.clearTimeout(casePointerSpeedTimerRef.current)
+      casePointerSpeedTimerRef.current = window.setTimeout(() => {
+        casePointerSpeedRef.current = 1
+      }, 220)
+    }
+
+    window.addEventListener('pointermove', handlePointerActivity, { passive: true })
+
+    return () => {
+      window.removeEventListener('pointermove', handlePointerActivity)
+      window.clearTimeout(casePointerSpeedTimerRef.current)
+    }
+  }, [])
+
+  useEffect(() => {
+    let lastTime = performance.now()
+    const baseSpeed = 34
+
+    const animateCaseTracks = (time: number) => {
+      const elapsed = Math.min((time - lastTime) / 1000, 0.05)
+      lastTime = time
+      const speedMultiplier = Math.max(loopSpeedRef.current, casePointerSpeedRef.current) > 1 ? 4.4 : 1
+      const distance = baseSpeed * speedMultiplier * elapsed
+
+      caseTrackRefs.current.forEach((track, rowIndex) => {
+        if (!track) return
+
+        const setWidth = track.scrollWidth / 3
+        if (!Number.isFinite(setWidth) || setWidth <= 0) return
+
+        const progress = (caseProgressRef.current[rowIndex] + distance) % setWidth
+        caseProgressRef.current[rowIndex] = progress
+        const x = rowIndex === 0 ? -setWidth + progress : -progress
+        track.style.transform = `translate3d(${x}px, 0, 0)`
+      })
+
+      caseFrameRef.current = window.requestAnimationFrame(animateCaseTracks)
+    }
+
+    caseFrameRef.current = window.requestAnimationFrame(animateCaseTracks)
+
+    return () => {
+      if (caseFrameRef.current) window.cancelAnimationFrame(caseFrameRef.current)
+    }
+  }, [])
+
+  useEffect(() => {
     const video = workflowVideoRef.current
     if (!video) return undefined
 
@@ -504,7 +575,17 @@ function App() {
           <div className="hero-image">
             <div className="hero-screen-video" aria-hidden="true">
               <div className="hero-screen-plane">
-                <div className="hero-empty-screen" />
+                <video
+                  autoPlay
+                  controls={false}
+                  controlsList="nodownload nofullscreen noremoteplayback"
+                  disablePictureInPicture
+                  loop
+                  muted
+                  playsInline
+                  preload="auto"
+                  src="/homepage-main-animation.mp4"
+                />
               </div>
             </div>
             <img
@@ -626,16 +707,27 @@ function App() {
           <h2>不同餐饮业态，都能从一个店名开始找到增长动作。</h2>
         </div>
         <div className="case-gallery-shell">
-          <CircularGallery
-            autoScrollSpeed={0.012}
-            bend={0}
-            borderRadius={0.05}
-            interactive
-            itemScale={1}
-            items={caseGalleryItems}
-            scrollEase={0.1}
-            scrollSpeed={2}
-          />
+          {caseShowcaseRows.map((row, rowIndex) => (
+            <div className={`case-marquee-row row-${rowIndex + 1}`} key={`case-row-${rowIndex + 1}`}>
+              <div
+                className="case-marquee-track"
+                ref={(node) => {
+                  caseTrackRefs.current[rowIndex] = node
+                }}
+                style={{ '--case-count': row.length } as CSSProperties}
+              >
+                {[0, 1, 2].map((copyIndex) => (
+                  <div className="case-marquee-set" key={`case-row-${rowIndex + 1}-${copyIndex}`}>
+                    {row.map((item) => (
+                      <article className="case-marquee-card" key={`${item.id}-${copyIndex}`}>
+                        <img alt={item.id} src={item.img} />
+                      </article>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
