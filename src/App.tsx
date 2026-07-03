@@ -20,6 +20,8 @@ import TextType from './components/TextType/TextType'
 import TrueFocus from './components/TrueFocus/TrueFocus'
 import './App.css'
 
+const publicAsset = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`
+
 const capabilityTabs = ['提问', '诊断', '执行', '复盘']
 const heroTitleOptions = [
   ['让', '餐饮', '更简单'],
@@ -58,41 +60,41 @@ const capabilityCards = [
   {
     title: '餐厅经营诊断',
     body: '聚合门店信息、评价、菜单、竞品与本地搜索表现，生成清晰问题列表。',
-    media: '/capability-question.mp4',
+    media: publicAsset('/capability-question.mp4'),
   },
   {
     title: '营销任务执行',
     body: '把诊断结果转成可执行任务，包含活动建议、渠道动作和文案草稿。',
-    media: '/capability-diagnosis.mp4',
+    media: publicAsset('/capability-diagnosis.mp4'),
   },
   {
     title: '数据看板追踪',
     body: '持续记录曝光、评价、转化和复购信号，让老板看到每一步变化。',
-    media: '/capability-execution.mp4',
+    media: publicAsset('/capability-execution.mp4'),
   },
   {
     title: '增长机会发现',
     body: '自动识别高优先级机会，帮助门店决定先做什么、为什么做。',
-    media: '/capability-review.mp4',
+    media: publicAsset('/capability-review.mp4'),
   },
 ]
 
 const caseShowcaseItems = [
-  { id: 'lujian-xiaoguan', img: '/case-dome-lujian-xiaoguan.png', height: 760 },
-  { id: 'wanyan', img: '/case-masonry-wanyan.jpg', height: 620 },
-  { id: 'dianniu', img: '/case-dome-dianniu.png', height: 720 },
-  { id: 'benlai-chuancai', img: '/case-dome-benlai-chuancai.png', height: 690 },
-  { id: 'asan-zhexian', img: '/case-dome-asan-zhexian.png', height: 700 },
-  { id: 'yunaman', img: '/case-dome-yunaman.png', height: 680 },
-  { id: 'yudonglan', img: '/case-dome-yudonglan.png', height: 700 },
-  { id: 'dongfadao', img: '/case-dome-dongfadao.png', height: 660 },
-  { id: 'pincui-huiyuan', img: '/case-dome-pincui-huiyuan.png', height: 720 },
-  { id: 'chuanshiduo', img: '/case-dome-chuanshiduo.png', height: 690 },
-  { id: 'rongxiansen', img: '/case-dome-rongxiansen.png', height: 650 },
-  { id: 'siji-fandian', img: '/case-dome-siji-fandian.png', height: 690 },
-  { id: 'gaoxing-yiguo', img: '/case-dome-gaoxing-yiguo.png', height: 620 },
-  { id: 'haoren-xiaochi', img: '/case-dome-haoren-xiaochi.png', height: 640 },
-  { id: 'yuyao-haixian', img: '/case-dome-yuyao-haixian.png', height: 660 },
+  { id: 'lujian-xiaoguan', img: publicAsset('/case-dome-lujian-xiaoguan.png'), height: 760 },
+  { id: 'wanyan', img: publicAsset('/case-masonry-wanyan.jpg'), height: 620 },
+  { id: 'dianniu', img: publicAsset('/case-dome-dianniu.png'), height: 720 },
+  { id: 'benlai-chuancai', img: publicAsset('/case-dome-benlai-chuancai.png'), height: 690 },
+  { id: 'asan-zhexian', img: publicAsset('/case-dome-asan-zhexian.png'), height: 700 },
+  { id: 'yunaman', img: publicAsset('/case-dome-yunaman.png'), height: 680 },
+  { id: 'yudonglan', img: publicAsset('/case-dome-yudonglan.png'), height: 700 },
+  { id: 'dongfadao', img: publicAsset('/case-dome-dongfadao.png'), height: 660 },
+  { id: 'pincui-huiyuan', img: publicAsset('/case-dome-pincui-huiyuan.png'), height: 720 },
+  { id: 'chuanshiduo', img: publicAsset('/case-dome-chuanshiduo.png'), height: 690 },
+  { id: 'rongxiansen', img: publicAsset('/case-dome-rongxiansen.png'), height: 650 },
+  { id: 'siji-fandian', img: publicAsset('/case-dome-siji-fandian.png'), height: 690 },
+  { id: 'gaoxing-yiguo', img: publicAsset('/case-dome-gaoxing-yiguo.png'), height: 620 },
+  { id: 'haoren-xiaochi', img: publicAsset('/case-dome-haoren-xiaochi.png'), height: 640 },
+  { id: 'yuyao-haixian', img: publicAsset('/case-dome-yuyao-haixian.png'), height: 660 },
 ]
 
 const caseShowcaseRows = [
@@ -120,17 +122,17 @@ const officialCards = [
 ]
 
 const videoCards = [
-  { title: '完整工作流演示', orientation: 'wide', media: '/sixth-section-animation-1.mp4' },
+  { title: '完整工作流演示', orientation: 'wide', media: publicAsset('/sixth-section-animation-1.mp4') },
   {
     title: '老板端快速输入',
     orientation: 'vertical',
-    media: '/sixth-section-animation-2.mp4',
+    media: publicAsset('/sixth-section-animation-2.mp4'),
     caption: '提升餐厅在榜单中的位置，\n效果你能看见。',
   },
   {
     title: '报告生成过程',
     orientation: 'vertical',
-    media: '/sixth-section-animation-3-current.mp4',
+    media: publicAsset('/sixth-section-animation-3-current.mp4'),
     caption: 'AI全执行，省时省力就是省钱。',
     captionColor: '#0a0d0b',
   },
@@ -534,8 +536,8 @@ function App() {
         <Lanyard
           position={[0, 0, 24]}
           gravity={[0, -40, 0]}
-          frontImage="/lanyard-front.svg?v=4"
-          backImage="/lanyard-back.svg?v=2"
+          frontImage={publicAsset('/lanyard-front.svg?v=4')}
+          backImage={publicAsset('/lanyard-back.svg?v=2')}
           imageFit="cover"
           lanyardWidth={1.08}
           sceneOffset={[0, 0, 0]}
@@ -584,12 +586,12 @@ function App() {
                   muted
                   playsInline
                   preload="auto"
-                  src="/homepage-main-animation.mp4"
+                  src={publicAsset('/homepage-main-animation.mp4')}
                 />
               </div>
             </div>
             <img
-              src="/hero-macbook-screen-cutout.png"
+              src={publicAsset('/hero-macbook-screen-cutout.png')}
               alt="Kitchain product shown on a MacBook"
             />
           </div>

@@ -429,12 +429,13 @@ class CircularGalleryScene {
     borderRadius: number,
     itemScale: number,
   ) {
+    const fallbackImage = `${import.meta.env.BASE_URL}case-black.svg`
     const fallbackItems: GalleryItem[] = [
-      { image: '/case-black.svg', title: '社区咖啡馆', line1: '社区轻食', line2: '提升复购效率' },
-      { image: '/case-black.svg', title: '川菜连锁', line1: '多店经营', line2: '串联增长动作' },
-      { image: '/case-black.svg', title: '日料小店', line1: '精致正餐', line2: '做好本地搜索' },
-      { image: '/case-black.svg', title: '商场轻食', line1: '工作简餐', line2: '抢占午市高峰' },
-      { image: '/case-black.svg', title: '夜宵烧烤', line1: '烟火夜宵', line2: '拉动夜间客流' },
+      { image: fallbackImage, title: '社区咖啡馆', line1: '社区轻食', line2: '提升复购效率' },
+      { image: fallbackImage, title: '川菜连锁', line1: '多店经营', line2: '串联增长动作' },
+      { image: fallbackImage, title: '日料小店', line1: '精致正餐', line2: '做好本地搜索' },
+      { image: fallbackImage, title: '商场轻食', line1: '工作简餐', line2: '抢占午市高峰' },
+      { image: fallbackImage, title: '夜宵烧烤', line1: '烟火夜宵', line2: '拉动夜间客流' },
     ]
     const galleryItems = items?.length ? items : fallbackItems
     const medias = galleryItems.concat(galleryItems)
