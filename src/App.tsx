@@ -25,12 +25,17 @@ const publicAsset = (path: string) => `${import.meta.env.BASE_URL}${path.replace
 const enforceVideoAutoplay = (video: HTMLVideoElement, restart = false) => {
   video.autoplay = true
   video.controls = false
+  video.defaultMuted = true
   video.loop = true
   video.muted = true
   video.playsInline = true
   video.disablePictureInPicture = true
+  video.removeAttribute('controls')
+  video.setAttribute('autoplay', '')
   video.setAttribute('controlsList', 'nodownload nofullscreen noremoteplayback')
   video.setAttribute('disableRemotePlayback', '')
+  video.setAttribute('loop', '')
+  video.setAttribute('muted', '')
   video.setAttribute('playsinline', '')
   video.setAttribute('webkit-playsinline', '')
 
@@ -234,19 +239,42 @@ function App() {
   }, [activeCapability])
 
   useEffect(() => {
+    const trackedVideos = new WeakSet<HTMLVideoElement>()
+    const cleanupVideoListeners: Array<() => void> = []
+
+    const bindVideo = (video: HTMLVideoElement) => {
+      enforceVideoAutoplay(video)
+      if (trackedVideos.has(video)) return
+
+      const resume = () => enforceVideoAutoplay(video)
+      video.addEventListener('loadedmetadata', resume)
+      video.addEventListener('canplay', resume)
+      video.addEventListener('pause', resume)
+      trackedVideos.add(video)
+      cleanupVideoListeners.push(() => {
+        video.removeEventListener('loadedmetadata', resume)
+        video.removeEventListener('canplay', resume)
+        video.removeEventListener('pause', resume)
+      })
+    }
+
     const playAllVideos = () => {
       document.querySelectorAll('video').forEach((video) => {
-        enforceVideoAutoplay(video)
+        bindVideo(video)
       })
     }
 
     playAllVideos()
+    const observer = new MutationObserver(playAllVideos)
+    observer.observe(document.body, { childList: true, subtree: true })
     document.addEventListener('visibilitychange', playAllVideos)
     window.addEventListener('focus', playAllVideos)
 
     return () => {
+      observer.disconnect()
       document.removeEventListener('visibilitychange', playAllVideos)
       window.removeEventListener('focus', playAllVideos)
+      cleanupVideoListeners.forEach((cleanup) => cleanup())
     }
   }, [])
 
