@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" rx="52" fill="#0a0d0b"/>
+  <rect x="112" y="104" width="976" height="592" rx="36" fill="#ffffff"/>
+  <path d="M190 560h820" stroke="#0a0d0b" stroke-width="18" stroke-linecap="round"/>
+  <rect x="194" y="188" width="220" height="312" rx="28" fill="#eef7f1" stroke="#0a0d0b" stroke-width="10"/>
+  <rect x="490" y="188" width="220" height="312" rx="28" fill="#eef7f1" stroke="#0a0d0b" stroke-width="10"/>
+  <rect x="786" y="188" width="220" height="312" rx="28" fill="#66f28f" stroke="#0a0d0b" stroke-width="10"/>
+  <text x="190" y="646" fill="#0a0d0b" font-family="Arial, sans-serif" font-size="74" font-weight="800">商场轻食</text>
+</svg>
