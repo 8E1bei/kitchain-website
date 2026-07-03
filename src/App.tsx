@@ -22,6 +22,24 @@ import './App.css'
 
 const publicAsset = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`
 
+const enforceVideoAutoplay = (video: HTMLVideoElement, restart = false) => {
+  video.autoplay = true
+  video.controls = false
+  video.loop = true
+  video.muted = true
+  video.playsInline = true
+  video.disablePictureInPicture = true
+  video.setAttribute('controlsList', 'nodownload nofullscreen noremoteplayback')
+  video.setAttribute('disableRemotePlayback', '')
+  video.setAttribute('playsinline', '')
+  video.setAttribute('webkit-playsinline', '')
+
+  if (restart) video.currentTime = 0
+  if (document.visibilityState === 'visible' && video.paused) {
+    void video.play().catch(() => undefined)
+  }
+}
+
 const capabilityTabs = ['提问', '诊断', '执行', '复盘']
 const heroTitleOptions = [
   ['让', '餐饮', '更简单'],
@@ -142,7 +160,6 @@ function App() {
   const [restaurantName, setRestaurantName] = useState('输入你的店名')
   const [isGenerating, setIsGenerating] = useState(false)
   const [activeCapability, setActiveCapability] = useState(0)
-  const [isCapabilityPaused, setIsCapabilityPaused] = useState(false)
   const [activeHeroTitle, setActiveHeroTitle] = useState(0)
   const [loopSpeed, setLoopSpeed] = useState(1)
   const capabilityTimerRef = useRef<number | undefined>(undefined)
@@ -158,19 +175,10 @@ function App() {
   const restaurantFormRef = useRef<HTMLFormElement>(null)
   const restaurantFormSlotRef = useRef<HTMLDivElement>(null)
   const capabilityVideoRef = useRef<HTMLVideoElement>(null)
-  const workflowVideoRef = useRef<HTMLVideoElement>(null)
   const activeCapabilityLeft = `${(activeCapability + 0.5) * 25}%`
-
-  const scheduleNextCapability = (delay = 2000) => {
-    window.clearTimeout(capabilityTimerRef.current)
-    capabilityTimerRef.current = window.setTimeout(() => {
-      setActiveCapability((current) => (current + 1) % capabilityTabs.length)
-    }, delay)
-  }
 
   useEffect(() => {
     window.clearTimeout(capabilityTimerRef.current)
-    if (isCapabilityPaused) return undefined
 
     const card = capabilityCards[activeCapability]
     const video = capabilityVideoRef.current
@@ -188,10 +196,7 @@ function App() {
 
     const playVideo = () => {
       if (isDisposed) return
-      video.controls = false
-      video.muted = true
-      video.currentTime = 0
-      void video.play().catch(() => undefined)
+      enforceVideoAutoplay(video, true)
     }
 
     const scheduleByDuration = () => {
@@ -209,9 +214,7 @@ function App() {
     }
 
     const resumeWhenVisible = () => {
-      if (document.visibilityState === 'visible' && !isCapabilityPaused && video.paused) {
-        void video.play().catch(() => undefined)
-      }
+      enforceVideoAutoplay(video)
     }
 
     if (video.readyState >= 1) {
@@ -228,7 +231,24 @@ function App() {
       document.removeEventListener('visibilitychange', resumeWhenVisible)
       window.clearTimeout(capabilityTimerRef.current)
     }
-  }, [activeCapability, isCapabilityPaused])
+  }, [activeCapability])
+
+  useEffect(() => {
+    const playAllVideos = () => {
+      document.querySelectorAll('video').forEach((video) => {
+        enforceVideoAutoplay(video)
+      })
+    }
+
+    playAllVideos()
+    document.addEventListener('visibilitychange', playAllVideos)
+    window.addEventListener('focus', playAllVideos)
+
+    return () => {
+      document.removeEventListener('visibilitychange', playAllVideos)
+      window.removeEventListener('focus', playAllVideos)
+    }
+  }, [])
 
   useEffect(() => {
     let frame = 0
@@ -411,47 +431,6 @@ function App() {
     }
   }, [])
 
-  useEffect(() => {
-    const video = workflowVideoRef.current
-    if (!video) return undefined
-
-    let isVisible = false
-
-    const restartVideo = () => {
-      if (!isVisible) return
-      video.currentTime = 0
-      void video.play().catch(() => undefined)
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        const shouldPlay = entry.isIntersecting && entry.intersectionRatio >= 0.45
-
-        if (shouldPlay && !isVisible) {
-          isVisible = true
-          if (video.readyState >= 1) {
-            restartVideo()
-          } else {
-            video.addEventListener('loadedmetadata', restartVideo, { once: true })
-          }
-        }
-
-        if (!entry.isIntersecting || entry.intersectionRatio < 0.12) {
-          isVisible = false
-          video.pause()
-          video.currentTime = 0
-        }
-      },
-      { threshold: [0, 0.12, 0.45, 0.75] },
-    )
-
-    observer.observe(video)
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [])
-
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (!restaurantName.trim()) return
@@ -461,20 +440,6 @@ function App() {
     window.setTimeout(() => {
       setIsGenerating(false)
     }, 1100)
-  }
-
-  const handleCapabilityVideoEnded = () => {
-    if (!isCapabilityPaused) {
-      scheduleNextCapability()
-    }
-  }
-
-  const resumeCapabilityRotation = () => {
-    setIsCapabilityPaused(false)
-
-    if (capabilityVideoRef.current?.ended) {
-      scheduleNextCapability()
-    }
   }
 
   const handleLanyardPullDown = () => {
@@ -584,6 +549,8 @@ function App() {
                   disablePictureInPicture
                   loop
                   muted
+                  onCanPlay={(event) => enforceVideoAutoplay(event.currentTarget)}
+                  onPause={(event) => enforceVideoAutoplay(event.currentTarget)}
                   playsInline
                   preload="auto"
                   src={publicAsset('/homepage-main-animation.mp4')}
@@ -649,7 +616,6 @@ function App() {
         <div
           className="capability-tabs"
           aria-label="Kitchain capability tabs"
-          onMouseLeave={resumeCapabilityRotation}
           style={{ '--active-tab-left': activeCapabilityLeft } as CSSProperties}
         >
           <span className="capability-tab-bubble" aria-hidden="true" />
@@ -657,13 +623,10 @@ function App() {
             <button
               className={index === activeCapability ? 'active' : ''}
               key={tab}
-              onBlur={() => setIsCapabilityPaused(false)}
               onFocus={() => {
-                setIsCapabilityPaused(true)
                 setActiveCapability(index)
               }}
               onMouseEnter={() => {
-                setIsCapabilityPaused(true)
                 setActiveCapability(index)
               }}
               type="button"
@@ -681,14 +644,12 @@ function App() {
               controls={false}
               controlsList="nodownload nofullscreen noremoteplayback"
               disablePictureInPicture
+              loop
               muted
               onCanPlay={(event) => {
-                const video = event.currentTarget
-                video.controls = false
-                video.muted = true
-                if (video.paused) void video.play().catch(() => undefined)
+                enforceVideoAutoplay(event.currentTarget)
               }}
-              onEnded={handleCapabilityVideoEnded}
+              onPause={(event) => enforceVideoAutoplay(event.currentTarget)}
               playsInline
               preload="auto"
               ref={capabilityVideoRef}
@@ -751,14 +712,11 @@ function App() {
                     loop
                     muted
                     onCanPlay={(event) => {
-                      const video = event.currentTarget
-                      video.controls = false
-                      video.muted = true
-                      if (video.paused) void video.play().catch(() => undefined)
+                      enforceVideoAutoplay(event.currentTarget)
                     }}
+                    onPause={(event) => enforceVideoAutoplay(event.currentTarget)}
                     playsInline
                     preload="auto"
-                    ref={card.orientation === 'wide' ? workflowVideoRef : undefined}
                     src={card.media}
                   />
                   {card.caption ? (
